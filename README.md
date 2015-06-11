@@ -15,8 +15,5 @@ Completed:
 * [] Additional: Theming the Settings page like the main application page.
 * [] Additional: Also remembering the tip percentage across app restarts.
 
-Notes:
-
-This only works for iPhone Retina 4" in Portrait orientation. I did not spend any time making the app look right in other screen sizes and Landscape orientation.
 
 ![Video Walkthrough](prework.gif)
