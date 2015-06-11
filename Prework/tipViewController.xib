@@ -81,6 +81,7 @@
                         <segment title="20%"/>
                     </segments>
                     <connections>
+                        <action selector="changePercent:" destination="-1" eventType="valueChanged" id="aaN-0R-mbi"/>
                         <action selector="onTap:" destination="-1" eventType="valueChanged" id="1Jr-gb-vVU"/>
                     </connections>
                 </segmentedControl>

@@ -51,7 +51,7 @@
 
 - (void)setDefaultSetting {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSInteger defaultValue = [defaults floatForKey:@"getDefaultSetting"];
+    NSInteger defaultValue = [defaults integerForKey:@"getDefaultSetting"];
     self.defaultSetting.selectedSegmentIndex = defaultValue;
     
 }

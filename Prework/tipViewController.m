@@ -18,14 +18,16 @@
 - (void)updateValues;
 - (void)onSettingsButton;
 - (void)loadDefaultSetting;
-
 - (void)viewWillAppear:(BOOL)animated;
-
 - (void)viewDidAppear:(BOOL)animated;
-
 - (void)viewWillDisappear:(BOOL)animated;
-
 - (void)viewDidDisappear:(BOOL)animated;
+- (void)dismissTheKeyBoard;
+- (void)displayTheKeyBoard;
+- (IBAction)changePercent:(id)sender;
+- (void)setBillAmount;
+- (void)getBillAmount;
+- (NSString *)formatCurrency:(float)amount;
 
 @end
 
@@ -45,7 +47,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self setBillAmount];
     [self updateValues];
+    [self displayTheKeyBoard];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStylePlain target:self action:@selector(onSettingsButton)];
     // Do any additional setup after loading the view from its nib.
@@ -67,8 +71,10 @@
 */
 
 - (IBAction)onTap:(id)sender {
-    [self.view endEditing:YES];
+    //[self.view endEditing:YES];
+    [self getBillAmount];
     [self updateValues];
+    [self dismissTheKeyBoard];
 }
 
 -(void)updateValues {
@@ -79,8 +85,8 @@
     float tipAmount = billAmount * [tipValue[self.tipControl.selectedSegmentIndex] floatValue];
     float totalAmount = tipAmount + billAmount;
     
-    self.tipLabel.text = [NSString stringWithFormat:@"$%0.2f", tipAmount];
-    self.totalLabel.text = [NSString stringWithFormat:@"$%0.2f", totalAmount];
+    self.tipLabel.text = [self formatCurrency:tipAmount];
+    self.totalLabel.text = [self formatCurrency:totalAmount];
 }
 
 - (void)onSettingsButton {
@@ -89,13 +95,14 @@
 
 - (void) loadDefaultSetting {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSInteger defaultValue = [defaults floatForKey:@"getDefaultSetting"];
+    NSInteger defaultValue = [defaults integerForKey:@"getDefaultSetting"];
     self.tipControl.selectedSegmentIndex = defaultValue;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     NSLog(@"view will appear");
     [self loadDefaultSetting];
+    [self displayTheKeyBoard];
     [self updateValues];
 }
 
@@ -111,6 +118,44 @@
 
 - (void)viewDidDisappear:(BOOL)animated {
     NSLog(@"view did disappear");
+}
+
+-(void)dismissTheKeyBoard
+{
+    [self.billTextField resignFirstResponder];
+}
+
+-(void)displayTheKeyBoard
+{
+    [self.billTextField becomeFirstResponder];
+}
+
+- (IBAction)changePercent:(id)sender {
+    [self getBillAmount];
+    [self updateValues];
+    [self dismissTheKeyBoard];
+}
+
+- (void)setBillAmount {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSInteger defaultValue = [defaults integerForKey:@"billAmount"];
+    self.billTextField.text = [NSString stringWithFormat:@"%ld", defaultValue];
+}
+
+- (void)getBillAmount {
+    NSString *defaultBill = self.billTextField.text;
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:defaultBill forKey:@"billAmount"];
+    [defaults synchronize];
+    
+}
+
+- (NSString *)formatCurrency:(float)amount {
+    NSNumberFormatter *nf = [[NSNumberFormatter alloc] init];
+    nf.numberStyle = NSNumberFormatterCurrencyStyle;
+    NSNumber *number = [NSNumber numberWithFloat:amount];
+    return [nf stringFromNumber:number];
 }
 
 @end
